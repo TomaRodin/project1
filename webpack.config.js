@@ -5,68 +5,68 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
-    entry: './src/Index.tsx',
-    output: {
-      path: path.resolve(__dirname, './dist'),
-      filename: 'bundle.js'
+  mode: 'development',
+  entry: './src/Index.tsx',
+  output: {
+    path: path.resolve(__dirname, './dist'),
+    filename: 'bundle.js'
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'index.html'),
+    }),],
+  devServer: {
+    static: {
+      directory: path.resolve(__dirname, './dist')
     },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: path.join(__dirname, 'index.html'),
-      }),],
-    devServer: {
-      static: {       
-        directory: path.resolve(__dirname, './dist')
+    historyApiFallback: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|ts)x?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
       },
-      historyApiFallback: true,
-    },
-    module: {
-        rules: [
+      {
+        test: /\.(scss)$/,
+        use: [
           {
-            test: /\.(js|ts)x?$/,
-            exclude: /node_modules/,
-            use: {
-              loader: 'babel-loader',
-            },
+            loader: 'style-loader'
           },
           {
-            test: /\.(scss)$/,
-            use: [
-              {
-                loader: 'style-loader'
-              },
-              {
-                loader: 'css-loader'
-              },
-              {
-                loader: 'postcss-loader',
-                options: {
-                  postcssOptions: {
-                    plugins: () => [
-                      require('autoprefixer')
-                    ]
-                  }
-                }
-              },
-              {
-                loader: 'sass-loader'
-              }
-            ],
+            loader: 'css-loader'
           },
           {
-            test: /\.html$/,
-            include: [path.resolve(__dirname, 'src/static')],
-            use: {
-              loader: 'file-loader',
-              options: {
-              name: '[name].[ext]',
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: () => [
+                  require('autoprefixer')
+                ]
               }
             }
+          },
+          {
+            loader: 'sass-loader'
           }
         ],
       },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.jsx', '.js']
-    },
-  }
+      {
+        test: /\.html$/,
+        include: [path.resolve(__dirname, 'src/static')],
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+          }
+        }
+      }
+    ],
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.jsx', '.js']
+  },
+}
